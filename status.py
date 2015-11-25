@@ -1,3 +1,4 @@
+#! /usr/bin/env python3
 # coding: utf-8
 import requests
 from bs4 import BeautifulSoup
@@ -5,7 +6,7 @@ from bs4 import BeautifulSoup
     Permite informar no site do Calango se o hackerspace está aberto
        ou fechado.
 
-    Disponibiliza uma interface em que o usuário diz se o Calango está
+    (TODO) Disponibiliza uma interface em que o usuário diz se o Calango está
        aberto ou fechado.
 
     Acessa o site do Calango e verifica se ele está aberto ou fechado.
@@ -22,24 +23,26 @@ def obter_credenciais():
         senha = arquivo.readline().strip()
     return (usuario, senha)
 
+
+def status_atual():
+    """Verifica no site o status atual (aberto ou fechado)"""
+    r = requests.get('http://calango.club/status?do=export_raw')
+    return r.text
+
+
 if __name__ == '__main__':
 
-    # r = requests.get('http://calango.club/status', auth=(usuario, senha))
-    # r.status_code
-    # r = requests.get('http://calango.club/status?do=export_raw')
-    # print(r.text)
-    # payload = {'id':'status', 'prefix','.','wiki__text':'aberto'}
-    # r = requests.get(url, auth=(usuario, senha), params=payload)
-    
+    print(status_atual())
+
     # cria a sessão
     s = requests.Session()
     (usuario, senha) = obter_credenciais()
     s.auth = (usuario, senha)
-    
+
     # acessa a página de edição e obtém o form com o token
     url = 'http://calango.club/status?do=edit'
     r = s.get(url)
-    
+
     # localiza o token da sessão na página
     soup = BeautifulSoup(r.content, 'html.parser')
     tags_input = soup.find_all('input')
@@ -47,12 +50,13 @@ if __name__ == '__main__':
         if 'name' in tag.attrs.keys():
             if tag.attrs['name'] == 'sectok':
                 sectok = tag.attrs['value']
-                
+
     print(sectok)
-    
+
     # preenche os campos do formulário e envia
-    payload = {'id':'status', 'prefix':'.', 'sectok': sectok, 'wiki__text':'aberto'}
+    payload = {'id': 'status', 'rev': '0', 'prefix': '.',
+               'sectok': sectok, 'wikitext': 'fechado'}
     url = 'http://calango.club/status?do=save'
-    r = s.post(url, data = payload)
-    
+    r = s.post(url, data=payload)
+
     print(r.status_code)
