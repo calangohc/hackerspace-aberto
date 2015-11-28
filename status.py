@@ -50,15 +50,13 @@ def atualiza_pagina(url, id_pagina, conteudo):
     
     return s.post(url, data=payload)
     
+    
 def muda_status(status):
-    pass
+    url = 'http://calango.club/status?do=edit'
+    atualiza_pagina(url, 'status', status)
 
 if __name__ == '__main__':
 
-    print(status_atual())
+    muda_status('hackathon')
 
-    # acessa a página de edição e obtém o form com o token
-    url = 'http://calango.club/status?do=edit'
-
-    atualiza_pagina(url, 'status', 'ativo')
     
