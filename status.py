@@ -15,6 +15,10 @@
 
 import requests
 from bs4 import BeautifulSoup
+from urllib.parse import urljoin
+
+
+DOMINIO = 'http://calango.club'
 
 
 def obter_credenciais():
@@ -31,14 +35,15 @@ def status_atual():
     return r.text
 
 
-def atualiza_pagina(url, id_pagina, conteudo):
+def atualiza_pagina(id_pagina, conteudo):
     
     # cria a sessão
     s = requests.Session()
     (usuario, senha) = obter_credenciais()
     s.auth = (usuario, senha)
     
-    r = s.get(url)
+    url = urljoin(DOMINIO, id_pagina)
+    r = s.get(url, params={'do': 'edit'})
 
     # localiza o token da sessão na página
     soup = BeautifulSoup(r.content, 'html.parser')
@@ -46,17 +51,17 @@ def atualiza_pagina(url, id_pagina, conteudo):
     
     payload = {'id': id_pagina, 'rev': '0', 'prefix': '.',
                'sectok': sectok, 'wikitext': conteudo}
-    url = 'http://calango.club/%s?do=save' %id_pagina
     
-    return s.post(url, data=payload)
+    return s.post(url, data=payload, params={'do': 'save'})
     
     
 def muda_status(status):
-    url = 'http://calango.club/status?do=edit'
-    atualiza_pagina(url, 'status', status)
+
+    atualiza_pagina('status', status)
+
 
 if __name__ == '__main__':
 
-    muda_status('hackathon')
+    muda_status('funcionando')
 
     
