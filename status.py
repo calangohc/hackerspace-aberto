@@ -69,6 +69,7 @@ def menu(title, choices):
         body.append(urwid.AttrMap(button, None, focus_map='reversed'))
     return urwid.ListBox(urwid.SimpleFocusListWalker(body))
 
+
 def item_chosen(button, choice):
     response = urwid.Text([u'You chose ', choice, u'\n'])
     muda_status(choice)
@@ -76,6 +77,7 @@ def item_chosen(button, choice):
     urwid.connect_signal(done, 'click', exit_program)
     main.original_widget = urwid.Filler(urwid.Pile([response,
         urwid.AttrMap(done, None, focus_map='reversed')]))
+
 
 def exit_program(button):
     raise urwid.ExitMainLoop()
