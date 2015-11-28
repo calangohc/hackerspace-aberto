@@ -31,29 +31,34 @@ def status_atual():
     return r.text
 
 
-if __name__ == '__main__':
-
-    print(status_atual())
-
+def atualiza_pagina(url, id_pagina, conteudo):
+    
     # cria a sessão
     s = requests.Session()
     (usuario, senha) = obter_credenciais()
     s.auth = (usuario, senha)
-
-    # acessa a página de edição e obtém o form com o token
-    url = 'http://calango.club/status?do=edit'
+    
     r = s.get(url)
 
     # localiza o token da sessão na página
     soup = BeautifulSoup(r.content, 'html.parser')
     sectok = soup.find('input', {'name':'sectok'})['value']
-
-    # preenche os campos do formulário e envia
-    status = 'aberto'
     
-    payload = {'id': 'status', 'rev': '0', 'prefix': '.',
-               'sectok': sectok, 'wikitext': status}
-    url = 'http://calango.club/status?do=save'
-    r = s.post(url, data=payload)
+    payload = {'id': id_pagina, 'rev': '0', 'prefix': '.',
+               'sectok': sectok, 'wikitext': conteudo}
+    url = 'http://calango.club/%s?do=save' %id_pagina
+    
+    return s.post(url, data=payload)
+    
+def muda_status(status):
+    pass
 
-    print(r.status_code)
+if __name__ == '__main__':
+
+    print(status_atual())
+
+    # acessa a página de edição e obtém o form com o token
+    url = 'http://calango.club/status?do=edit'
+
+    atualiza_pagina(url, 'status', 'ativo')
+    
