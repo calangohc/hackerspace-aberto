@@ -46,19 +46,7 @@ if __name__ == '__main__':
 
     # localiza o token da sessão na página
     soup = BeautifulSoup(r.content, 'html.parser')
-    # tags_input = soup.find_all('input')
-    # import ipdb; ipdb.set_trace()
-    # for tag in tags_input:
-        # if 'name' in tag.attrs.keys():
-            # if tag.attrs['name'] == 'sectok':
-                # sectok = tag.attrs['value']
-    
     sectok = soup.find('input', {'name':'sectok'})['value']
-    
-    # tag = soup.find('input', {'name':'sectok'})
-    # sectok = tag['value']
-
-    print(sectok)
 
     # preenche os campos do formulário e envia
     status = 'aberto'
