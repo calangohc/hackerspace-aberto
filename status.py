@@ -1,7 +1,5 @@
 #! /usr/bin/env python3
 # coding: utf-8
-import requests
-from bs4 import BeautifulSoup
 """
     Permite informar no site do Calango se o hackerspace está aberto
        ou fechado.
@@ -14,6 +12,9 @@ from bs4 import BeautifulSoup
     Se a situação informada no site for diferente da informada pelo
        usuário, atualiza o site com a informação do usuário.
 """
+
+import requests
+from bs4 import BeautifulSoup
 
 
 def obter_credenciais():
@@ -45,17 +46,25 @@ if __name__ == '__main__':
 
     # localiza o token da sessão na página
     soup = BeautifulSoup(r.content, 'html.parser')
-    tags_input = soup.find_all('input')
-    for tag in tags_input:
-        if 'name' in tag.attrs.keys():
-            if tag.attrs['name'] == 'sectok':
-                sectok = tag.attrs['value']
+    # tags_input = soup.find_all('input')
+    # import ipdb; ipdb.set_trace()
+    # for tag in tags_input:
+        # if 'name' in tag.attrs.keys():
+            # if tag.attrs['name'] == 'sectok':
+                # sectok = tag.attrs['value']
+    
+    sectok = soup.find('input', {'name':'sectok'})['value']
+    
+    # tag = soup.find('input', {'name':'sectok'})
+    # sectok = tag['value']
 
     print(sectok)
 
     # preenche os campos do formulário e envia
+    status = 'aberto'
+    
     payload = {'id': 'status', 'rev': '0', 'prefix': '.',
-               'sectok': sectok, 'wikitext': 'fechado'}
+               'sectok': sectok, 'wikitext': status}
     url = 'http://calango.club/status?do=save'
     r = s.post(url, data=payload)
 
