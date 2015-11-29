@@ -13,14 +13,16 @@
        usuário, atualiza o site com a informação do usuário.
 """
 
+import telebot   ## https://github.com/eternnoir/pyTelegramBotAPI
 import requests
 import urwid
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 
-
+TOKEN = ''       ## Token gerado pelo http://telegram.me/botfather
 DOMINIO = 'http://calango.club'
 
+bot = telebot.TeleBot(TOKEN,True,4)
 
 def obter_credenciais():
     """Obtém usuário e senha de um arquivo"""
@@ -59,6 +61,9 @@ def atualiza_pagina(id_pagina, conteudo):
 def muda_status(status):
 
     atualiza_pagina('status', status)
+    chatid = '-10265914'   # Id do Grupo do Calango Hacker Clube no Telegram
+    mensagem = '#Status: ' # Hashtag para facilitar a busca no Telegram
+    tb.send_message(chatid, mensagem+status)
 
 
 def menu(title, choices):
@@ -93,4 +98,3 @@ if __name__ == '__main__':
                         valign='middle', height=('relative', 60),
                         min_width=20, min_height=9)
     urwid.MainLoop(top, palette=[('reversed', 'standout', '')]).run()
-
