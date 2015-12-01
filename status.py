@@ -64,43 +64,58 @@ def muda_status(status):
     atualiza_pagina('status', status)
 
 
-def menu(title, choices):
+def cria_menu(título, opções):
     """Interface do Urwid"""
-    body = [urwid.Text(title), urwid.Divider()]
-    for c in choices:
-        button = urwid.Button(c)
-        urwid.connect_signal(button, 'click', item_chosen, c)
-        body.append(urwid.AttrMap(button, None, focus_map='reversed'))
-    return urwid.ListBox(urwid.SimpleFocusListWalker(body))
+    corpo = [urwid.Text(título), urwid.Divider()]
+    for opção in opções:
+        botão = urwid.Button(opção)
+        # vincula o botão à chamada de escolhe_opção() passando a
+        # opção escolhida e o botão pressionado
+        urwid.connect_signal(botão, 'click', escolhe_opção, opção)
+        # desenha o botão
+        corpo.append(urwid.AttrMap(botão, None, focus_map='reversed'))
+    return urwid.ListBox(urwid.SimpleFocusListWalker(corpo))
 
 
-def item_chosen(button, choice):
+def escolhe_opção(botão, escolha):
     """Ação disparada pela seleção de uma opção"""
-    response = urwid.Text([u'You chose ', choice, u'\n'])
-    muda_status(choice)
-    done = urwid.Button(u'Ok')
-    urwid.connect_signal(done, 'click', exit_program)
-    main.original_widget = \
+    response = urwid.Text(['Status alterado para ', escolha, '\n'])
+    muda_status(escolha)
+    botao_ok = urwid.Button('Ok')
+    # vincula o botão "Ok" ao seu callback
+    urwid.connect_signal(botao_ok, 'click', reinicia)
+    # inclui o botão "Ok" na janela
+    janela.original_widget = \
         urwid.Filler(
             urwid.Pile([response,
-                        urwid.AttrMap(done, None,
+                        urwid.AttrMap(botao_ok, None,
                                       focus_map='reversed')]))
+
+
+def reinicia(button):
+    janela.original_widget = cria_janela()
 
 
 def exit_program(button):
     raise urwid.ExitMainLoop()
 
 
-def main_loop():
-   top = urwid.Overlay(main, urwid.SolidFill(u'\N{MEDIUM SHADE}'),
-                        align='center', width=('relative', 60),
-                        valign='middle', height=('relative', 60),
-                        min_width=20, min_height=9)
-   urwid.MainLoop(top, palette=[('reversed', 'standout', '')]).run()
+def cria_janela():
+    opções = 'Aberto Fechado'.split()
+    # janela contém menu
+    menu = cria_menu("Status Calango", opções)
+    return urwid.Padding(menu, left=2, right=2)
 
+
+def cria_interface(janela):
+    # tela é o widget principal do urwid e contém janela
+    return urwid.Overlay(janela, urwid.SolidFill(u'\N{MEDIUM SHADE}'),
+                         align='center', width=('relative', 60),
+                         valign='middle', height=('relative', 60),
+                         min_width=20, min_height=9)
 
 
 if __name__ == '__main__':
-    choices = 'Aberto Fechado'.split()
-    main = urwid.Padding(menu(u'Status Calango', choices), left=2, right=2)
-    main_loop()
+    janela = cria_janela()
+    urwid.MainLoop(cria_interface(janela),
+                   palette=[('reversed', 'standout', '')]).run()
