@@ -91,13 +91,16 @@ def exit_program(button):
     raise urwid.ExitMainLoop()
 
 
-if __name__ == '__main__':
-
-    choices = 'Aberto Fechado'.split()
-
-    main = urwid.Padding(menu(u'Status Calango', choices), left=2, right=2)
-    top = urwid.Overlay(main, urwid.SolidFill(u'\N{MEDIUM SHADE}'),
+def main_loop():
+   top = urwid.Overlay(main, urwid.SolidFill(u'\N{MEDIUM SHADE}'),
                         align='center', width=('relative', 60),
                         valign='middle', height=('relative', 60),
                         min_width=20, min_height=9)
-    urwid.MainLoop(top, palette=[('reversed', 'standout', '')]).run()
+   urwid.MainLoop(top, palette=[('reversed', 'standout', '')]).run()
+
+
+
+if __name__ == '__main__':
+    choices = 'Aberto Fechado'.split()
+    main = urwid.Padding(menu(u'Status Calango', choices), left=2, right=2)
+    main_loop()
