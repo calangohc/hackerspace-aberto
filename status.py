@@ -13,10 +13,12 @@
        usuário, atualiza o site com a informação do usuário.
 """
 
-import urwid
+### WIKI Lib
 from wiki_api import CalangoWiki
-
 wiki = CalangoWiki()
+
+### GUI Lib
+import urwid
 
 def status_atual():
     """Verifica no site o status atual (aberto ou fechado)"""
