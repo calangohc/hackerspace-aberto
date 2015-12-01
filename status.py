@@ -13,55 +13,20 @@
        usuário, atualiza o site com a informação do usuário.
 """
 
-import requests
 import urwid
-from bs4 import BeautifulSoup
-from urllib.parse import urljoin
+from wiki_api import CalangoWiki
 
-
-DOMINIO = 'http://calango.club'
-
-
-def obter_credenciais():
-    """Obtém usuário e senha de um arquivo"""
-    with open('credenciais.txt') as arquivo:
-        usuario = arquivo.readline().strip()
-        senha = arquivo.readline().strip()
-    return (usuario, senha)
-
+wiki = CalangoWiki()
 
 def status_atual():
     """Verifica no site o status atual (aberto ou fechado)"""
-    r = requests.get('http://calango.club/status?do=export_raw')
-    return r.text
-
-
-def atualiza_pagina(id_pagina, conteudo):
-    """Modificador genérico de páginas da wiki"""
-    # cria a sessão
-    s = requests.Session()
-    (usuario, senha) = obter_credenciais()
-    s.auth = (usuario, senha)
-
-    # monta a url como dominio/pagina
-    url = urljoin(DOMINIO, id_pagina)
-    r = s.get(url, params={'do': 'edit'})
-
-    # localiza o token da sessão na página
-    soup = BeautifulSoup(r.content, 'html.parser')
-    sectok = soup.find('input', {'name': 'sectok'})['value']
-
-    # conteúdo do form a ser submetido
-    payload = {'id': id_pagina, 'rev': '0', 'prefix': '.',
-               'sectok': sectok, 'wikitext': conteudo}
-
-    return s.post(url, data=payload, params={'do': 'save'})
+    return wiki.conteudo_pagina("status")
 
 
 def muda_status(status):
     """Atualiza a wiki com o status selecionado"""
     # TODO Verificar o status atual antes para evitar atualização desnecessária
-    atualiza_pagina('status', status)
+    wiki.atualiza_pagina('status', status)
 
 
 def cria_menu(título, opções):
@@ -101,9 +66,11 @@ def exit_program(button):
 
 
 def cria_janela():
-    opções = 'Aberto Fechado'.split()
     # janela contém menu
-    menu = cria_menu("Status Calango", opções)
+
+    opções = 'Aberto Fechado'.split()
+    
+    menu = cria_menu("Status Calango (%s)" % status_atual(), opções)
     return urwid.Padding(menu, left=2, right=2)
 
 
