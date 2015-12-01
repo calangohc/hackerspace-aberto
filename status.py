@@ -37,12 +37,13 @@ def status_atual():
 
 
 def atualiza_pagina(id_pagina, conteudo):
-
+    """Modificador genérico de páginas da wiki"""
     # cria a sessão
     s = requests.Session()
     (usuario, senha) = obter_credenciais()
     s.auth = (usuario, senha)
 
+    # monta a url como dominio/pagina
     url = urljoin(DOMINIO, id_pagina)
     r = s.get(url, params={'do': 'edit'})
 
@@ -50,6 +51,7 @@ def atualiza_pagina(id_pagina, conteudo):
     soup = BeautifulSoup(r.content, 'html.parser')
     sectok = soup.find('input', {'name': 'sectok'})['value']
 
+    # conteúdo do form a ser submetido
     payload = {'id': id_pagina, 'rev': '0', 'prefix': '.',
                'sectok': sectok, 'wikitext': conteudo}
 
@@ -57,11 +59,13 @@ def atualiza_pagina(id_pagina, conteudo):
 
 
 def muda_status(status):
-
+    """Atualiza a wiki com o status selecionado"""
+    # TODO Verificar o status atual antes para evitar atualização desnecessária
     atualiza_pagina('status', status)
 
 
 def menu(title, choices):
+    """Interface do Urwid"""
     body = [urwid.Text(title), urwid.Divider()]
     for c in choices:
         button = urwid.Button(c)
@@ -71,11 +75,12 @@ def menu(title, choices):
 
 
 def item_chosen(button, choice):
+    """Ação disparada pela seleção de uma opção"""
     response = urwid.Text([u'You chose ', choice, u'\n'])
     muda_status(choice)
     done = urwid.Button(u'Ok')
     urwid.connect_signal(done, 'click', exit_program)
-    main.original_widget = \\
+    main.original_widget = \
         urwid.Filler(
             urwid.Pile([response,
                         urwid.AttrMap(done, None,
