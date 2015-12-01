@@ -75,8 +75,11 @@ def item_chosen(button, choice):
     muda_status(choice)
     done = urwid.Button(u'Ok')
     urwid.connect_signal(done, 'click', exit_program)
-    main.original_widget = urwid.Filler(urwid.Pile([response,
-        urwid.AttrMap(done, None, focus_map='reversed')]))
+    main.original_widget = \\
+        urwid.Filler(
+            urwid.Pile([response,
+                        urwid.AttrMap(done, None,
+                                      focus_map='reversed')]))
 
 
 def exit_program(button):
@@ -93,4 +96,3 @@ if __name__ == '__main__':
                         valign='middle', height=('relative', 60),
                         min_width=20, min_height=9)
     urwid.MainLoop(top, palette=[('reversed', 'standout', '')]).run()
-
