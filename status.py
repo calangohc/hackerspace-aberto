@@ -4,7 +4,7 @@
     Permite informar no site do Calango se o hackerspace está aberto
        ou fechado.
 
-    (TODO) Disponibiliza uma interface em que o usuário diz se o Calango está
+    Disponibiliza uma interface em que o usuário diz se o Calango está
        aberto ou fechado.
 
     Acessa o site do Calango e verifica se ele está aberto ou fechado.
