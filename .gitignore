@@ -1,2 +1,4 @@
 credenciais.txt
 env
+*.swp
+__pycache__
