@@ -44,9 +44,11 @@ class CalangoWiki :
         soup = BeautifulSoup(r.content, 'html.parser')
         sectok = soup.find('input', {'name': 'sectok'})['value']
 
+        wikitext = "{{ :status:imagens:%s.png?nolink&300 |}}" \
+                    % conteudo.lower()
         # conteúdo do form a ser submetido
         payload = {'id': id_pagina, 'rev': '0', 'prefix': '.',
-                   'sectok': sectok, 'wikitext': conteudo}
+                   'sectok': sectok, 'wikitext': wikitext}
 
         return s.post(url, data=payload, params={'do': 'save'})
     
