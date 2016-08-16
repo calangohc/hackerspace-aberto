@@ -1,6 +1,6 @@
 #!/bin/sh
 ### BEGIN INIT INFO
-# Provides:
+# Provides: initSensorPorta
 # Required-Start:    $remote_fs $syslog
 # Required-Stop:     $remote_fs $syslog
 # Default-Start:     2 3 4 5
@@ -9,9 +9,9 @@
 # Description:       Enable service provided by daemon.
 ### END INIT INFO
 
-dir=""
-cmd=""
-user=""
+dir="/home/chip/GPIO/src"
+cmd="python t1.py"
+user="root"
 
 name=`basename $0`
 pid_file="/var/run/$name.pid"

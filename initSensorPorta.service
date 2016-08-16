@@ -1,0 +1,14 @@
+[Unit]
+Description=InitSensorPorta Service
+
+[Service]
+Type=idle
+RemainAfterExit=yes
+ExecStart=/etc/init.d/initSensorPorta start
+ExecStop=/etc/init.d/initSensorPorta stop
+#Restart=/etc/init.d/initSensorPorta restart
+#PIDFile=/var/run/initSensorPorta.pid
+
+[Install]
+WantedBy=multi-user.target
+
